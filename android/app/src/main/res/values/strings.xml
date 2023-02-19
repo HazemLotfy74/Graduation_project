@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">roshta</string>
+    <string name="facebook_app_id">512309227654003</string>
+    <string name="fb_login_protocol_scheme">fb512309227654003</string>
+    <string name="facebook_client_token">be8711cbd1d6edce60815068ee772659</string>
+
+
+</resources>

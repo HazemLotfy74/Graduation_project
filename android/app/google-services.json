@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "863377697230",
+    "project_id": "finalproject-bd9da",
+    "storage_bucket": "finalproject-bd9da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863377697230:android:40f7c971c93907569b239f",
+        "android_client_info": {
+          "package_name": "com.hazem.finalproject.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863377697230-l75ni10jjdbrleh1m4la2u7i2g5dpe1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKEXVnCRp49jnIq8YRmxT3ymyNE3v8Ppg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863377697230-l75ni10jjdbrleh1m4la2u7i2g5dpe1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
