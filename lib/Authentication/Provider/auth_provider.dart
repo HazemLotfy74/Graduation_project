@@ -14,7 +14,8 @@ import '../Screens/verify_email.dart';
 
 
 
-class AuthProvider extends ChangeNotifier{
+class AuthProvider extends ChangeNotifier
+{
   FirebaseAuth loginAuth = FirebaseAuth.instance;
   FirebaseFirestore database = FirebaseFirestore.instance;
   GoogleSignIn googleSignIn=GoogleSignIn();
@@ -25,8 +26,8 @@ class AuthProvider extends ChangeNotifier{
   Timer? time;
 
   void login({ required String email ,required String password,required context})async{
-    showDialog(context: context,barrierDismissible: false, builder: (context) =>  Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
     try{
+      showDialog(context: context,barrierDismissible: false, builder: (context) =>  Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
       await loginAuth.signInWithEmailAndPassword(email: email, password: password);
       Get.offAll(const VerifyEmail());
     }
@@ -36,15 +37,17 @@ class AuthProvider extends ChangeNotifier{
   }
 
   void register({required String email ,required String password,required String name,required context})async{
-    showDialog(context: context,barrierDismissible: false, builder: (context) =>  Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
+
     try{
+      showDialog(context: context,barrierDismissible: false, builder: (context) =>  Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
       await loginAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) {
         saveUser(value, name,email);
       });
       Get.offAll(const VerifyEmail());
     }
    on FirebaseAuthException catch(e){
-      Get.dialog(await QuickAlert.show(context: context, type: QuickAlertType.error,text: e.toString()));
+      if(context!=null){
+      Get.dialog(await QuickAlert.show(context: context, type: QuickAlertType.error,text: e.toString()));}
     }
   }
 
@@ -56,9 +59,7 @@ class AuthProvider extends ChangeNotifier{
   void googleSign(context)async{
     showDialog(context: context,barrierDismissible: false, builder: (context) => Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-
     GoogleSignInAuthentication google = await googleUser!.authentication;
-
     var credintal=GoogleAuthProvider.credential(idToken:google.idToken ,accessToken: google.accessToken);
     await loginAuth.signInWithCredential(credintal).then((value) {
       saveUser(value, "","");
@@ -88,33 +89,6 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-
-/*void facebook_login(context)async{
-    final result = await FacebookAuth.i.login(permissions: ['email', 'public_profile']);
-    try
-    {
-      if(result.status==LoginStatus.success){
-        final faceData = await FacebookAuth.instance.getUserData(fields: 'email,name,id');
-        print(faceData['email']);
-        print(faceData['name']);
-        print(faceData['id']);
-
-
-        final facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken!.token);
-        await loginAuth.signInWithCredential(facebookAuthCredential).then((value) {
-          Get.offAll(const HomePage());
-        });
-      }
-      notifyListeners();
-    }
-    catch(e)
-    {
-     Get.dialog(await QuickAlert.show(context: context, type: QuickAlertType.error,text: e.toString()));
-    }
-
-    notifyListeners();
-
-}*/
   Future<void> loginWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
     if (result.status == LoginStatus.success) {
@@ -139,12 +113,23 @@ class AuthProvider extends ChangeNotifier{
         Get.to(HomePage());
       }
     } else {
-
+      Get.showSnackbar(GetSnackBar(title: "Error",backgroundColor: Colors.green,message: "Facebook login error",));
     }
   }
 
 
-
+Future resetPassword({required String email,context}) async{
+  showDialog(context: context,barrierDismissible: false, builder: (context) => Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),),);
+  try{
+     await loginAuth.sendPasswordResetEmail(email: email);
+     Get.showSnackbar(GetSnackBar(title: " Password Reset",backgroundColor: HexColor('fc746c'),message: "Password reset email has sent",duration: Duration(seconds: 2),));
+     Get.to(LoginScreen());
+    }
+   on FirebaseAuthException catch(e){
+      print(e);
+      Get.showSnackbar(GetSnackBar(title: " Password Reset",backgroundColor: Colors.green,message: e.message,));
+   }
+}
 
 
 }

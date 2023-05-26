@@ -1,17 +1,17 @@
-import 'package:animated_icon_button/animated_icon_button.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
+
 import 'package:finalproject/Authentication/Provider/auth_provider.dart';
+import 'package:finalproject/Home_Screen/Screens/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:tflite/tflite.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../Database/database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,19 +21,52 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   bool textScanning = false;
-
   XFile? imageFile;
+ bool imageSelect = false;
 
-  String scannedText = "";
 
-  final _formKey = GlobalKey<FormState>();
-  String? drugName;
-  DatabaseHelper data = DatabaseHelper();
-  var result;
+ late List dataResults;
+
+ Future loadModel()async{
+
+   String? res;
+   res= await Tflite.loadModel(
+        model: "assets/model_unquant.tflite",
+        labels: "assets/labels.txt"
+    );
+   print("models loading $res");
+  }
+ void initState() {
+    loadModel().then((value){
+      setState(() {
+      });
+    });
+    super.initState();
+  }
+  @override
+  void dispose() async{
+    Tflite.close();
+    super.dispose();
+  }
+
+Future classifyImage(XFile imageFile) async {
+  var recognitions = await Tflite.runModelOnImage(path: imageFile.path,
+    imageStd:50,
+    imageMean: 150,
+    threshold: 0.1,
+    numResults: 1,
+  );
+  setState(() {
+    dataResults = recognitions!;
+    imageSelect = true;
+    textScanning = false;
+  });
+}
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: MyDrawer(context),
       appBar: AppBar(
@@ -43,75 +76,17 @@ class _HomePageState extends State<HomePage> {
           textStyle: TextStyle(fontSize: 25,color: Colors.white)
         ),),
         actions: [
-          AnimatedIconButton(onPressed: () {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.question,
-              animType: AnimType.topSlide,
-              transitionAnimationDuration: Duration(seconds: 1),
-              padding: EdgeInsets.all(10),
-              width: double.infinity,
-              body: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a drug name';
-                          }
-                          return null;
-                        },
-                        onChanged: (Value)async {
-                          drugName=Value;
-                          result = await data.searchDrug(drugName!);
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(25))
-                          ),
-                          constraints: BoxConstraints(maxWidth: 200,maxHeight: 120),
-                          prefixIcon:Icon(Icons.search),
-                          hintText: 'Search for a drug',
-                        )
-                    ),
-                  ],
-                ),
-              ),
-              title: 'Search',
-              btnCancelOnPress: () {},
-              btnOkOnPress: () async {
-                if (_formKey.currentState!.validate()) {
-                  final result =  await data.searchDrug(drugName!);
-                  print(result);
-                }
-                AwesomeDialog(
-                  context: context,
-                  animType: AnimType.bottomSlide,
-                  dialogType: DialogType.info,
-                  body: Column(
-                    children: [
-                      Text(drugName==null?"No drugs entered":"$drugName ${result.toString()}",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
-                    ],
-                  ),
-                  btnOkOnPress: () {
-                    drugName=null;
-                  },
-                  btnCancelOnPress: () {},
-                )..show();
-              },
-
-            )..show();
+          IconButton(
+            onPressed: () {
+              Get.to(SearchScreen());
           },
-              icons:[AnimatedIconItem(icon: Icon(EvaIcons.search,color: Colors.white,))],
-           splashColor: Colors.white,
-            duration: Duration(seconds: 1),
+            icon:Icon(Icons.search)
           )
         ],
       ),
       body: Center(
           child: SingleChildScrollView(
-        child: Container(
+            child: Container(
             margin: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,14 +177,24 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
-                Text(
-                  scannedText,
-                  style: const TextStyle(fontSize: 20),
+                Column(
+                  children: (imageSelect)? dataResults.map((e){
+                    return Card(
+                      child: Container(
+                        child: Text(
+                          "the prediction drug is : ${e['label'].toString()}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                        ),
+                      ),
+                    );
+                  }).toList():[
+                    Text("No image selected",style: GoogleFonts.pacifico(color: Colors.grey,fontSize: 20),)
+                  ],
                 )
               ],
-            )),
+            )
+            ),
       )),
     );
   }
@@ -220,41 +205,26 @@ class _HomePageState extends State<HomePage> {
       if (pickedImage != null) {
         textScanning = true;
         imageFile = pickedImage;
-        setState(() {});
-        // getRecognisedText(pickedImage);
+        setState(() {
+          imageFile = pickedImage;
+        });
       }
     } catch (e) {
       textScanning = false;
       imageFile = null;
-      scannedText = "Error occurred while scanning";
       setState(() {});
     }
+    classifyImage(imageFile!);
   }
 
-  /*void getRecognisedText(XFile image) async {
-    final inputImage = InputImage.fromFilePath(image.path);
-    final textDetector = GoogleMlKit.vision.textRecognizer();
-    RecognizedText recognisedText = await textDetector.processImage(inputImage);
-    await textDetector.close();
-    scannedText = "";
-    for (TextBlock block in recognisedText.blocks) {
-      for (TextLine line in block.lines) {
-        scannedText = "$scannedText${line.text}\n";
-      }
-    }
-    textScanning = false;
-    setState(() {});
-  }*/
 
-  @override
-  void initState() {
-    super.initState();
-    data.open();
-  }
+
+
+
 }
 
 MyDrawer(context) {
-  var user = Provider.of<AuthProvider>(context).user;
+
   Provider.of<AuthProvider>(context).getUser();
   var saif_url = 'https://seif-online.com/';
   var alDawaa_url = 'https://www.al-dawaa.com/';
@@ -267,20 +237,28 @@ MyDrawer(context) {
         AppBar(
           backgroundColor: HexColor('fc746c'),
           toolbarHeight: 100,
-          leading: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Image(image: NetworkImage(Provider.of<AuthProvider>(context).user.image==null?'https://t3.ftcdn.net/jpg/01/18/01/98/360_F_118019822_6CKXP6rXmVhDOzbXZlLqEM2ya4HhYzSV.jpg':user.image,),),
-            radius: 10,
+          leading: Padding(
+            padding: const EdgeInsets.all(5),
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: FadeInImage(image: NetworkImage(Provider.of<AuthProvider>(context).user.image),
+                placeholder: AssetImage('assets/user.png'),
+                imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/user.png');
+                  },
+              ),
+              radius: 10,
+            ),
           ),
           leadingWidth: 60,
           title: Column(
             children: [
               Text(
-                Provider.of<AuthProvider>(context).user.name==null?'':user.name,
+                Provider.of<AuthProvider>(context).user.name,
                 style: TextStyle(fontSize: 15),
               ),
               Text(
-                Provider.of<AuthProvider>(context).user.email==null?"":user.email,
+                Provider.of<AuthProvider>(context).user.email,
                 style: TextStyle(fontSize: 15),
               )
             ],
@@ -303,10 +281,9 @@ MyDrawer(context) {
               ),
             ),
             onTap: () async {
-              await launch(
-                saif_url,
-                enableJavaScript: true,
-                forceWebView: true,
+              await launchUrl(
+                Uri.parse(saif_url),
+               webViewConfiguration: WebViewConfiguration(enableJavaScript: true)
               );
             }),
         SizedBox(child: Container(width: double.infinity,height: 1.2,color: Colors.grey[300],),),
@@ -321,10 +298,9 @@ MyDrawer(context) {
                     fontSize: 20, color: Colors.black),),
           ),
           onTap: () async {
-              await launch(
-                alDawaa_url,
-                enableJavaScript: true,
-                forceWebView: true,
+              await launchUrl(
+               Uri.parse( alDawaa_url),
+                webViewConfiguration: WebViewConfiguration(enableJavaScript: true)
               );
             }
         ),
@@ -340,7 +316,7 @@ MyDrawer(context) {
                       fontSize: 20, color: Colors.black),),
             ),
             onTap:()async {
-              await launch(vezeeta_url,enableJavaScript: true,forceWebView: true,);
+              await launchUrl(Uri.parse(vezeeta_url),webViewConfiguration: WebViewConfiguration(enableJavaScript: true));
             }
         ),
         SizedBox(child: Container(width: double.infinity,height: 1.2,color: Colors.grey[300],),),
@@ -356,14 +332,15 @@ MyDrawer(context) {
                       color: Colors.black),),
             ),
             onTap:()async {
-              await launch(misr_url,
-                enableJavaScript: true,
-                forceWebView: true,);
+              await launchUrl(Uri.parse(misr_url),
+                webViewConfiguration: WebViewConfiguration(enableJavaScript: true)
+              );
             }
         ),
         SizedBox(child: Container(width: double.infinity,height: 1.2,color: Colors.grey[300],),),
-
       ],
     ),
   );
 }
+
+

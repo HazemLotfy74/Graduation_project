@@ -1,12 +1,9 @@
-import 'package:animated_svg/animated_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
-
 import '../Provider/auth_provider.dart';
 import 'Login_Screen.dart';
 
@@ -38,7 +35,7 @@ class RegisterScreen extends StatelessWidget {
                   children: [
                      Text(
                       "Sign Up",
-                      style:  GoogleFonts.nerkoOne(fontSize: 30, fontWeight: FontWeight.bold),
+                      style:  GoogleFonts.nerkoOne(fontSize: 30, fontWeight: FontWeight.bold,color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
@@ -124,7 +121,10 @@ class RegisterScreen extends StatelessWidget {
                           Provider.of<AuthProvider>(context,listen: false).register(email: _email.text, password: _password.text,name: _name.text,context: context);
                         }
                       },
-                      child: Text('Sign Up', style:  GoogleFonts.nerkoOne(fontSize: 20),
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStatePropertyAll(HexColor('fc746c'))),
+                      child: Text('Sign Up', style:  GoogleFonts.nerkoOne(fontSize: 20,color: Colors.white),
                       ),
                     ),
                     Row(
@@ -135,7 +135,7 @@ class RegisterScreen extends StatelessWidget {
                           onPressed: () {
                             Get.to(LoginScreen());
                           },
-                          child: const Text('Login'),
+                          child: Text('Login',style:  GoogleFonts.nerkoOne(color: HexColor('fc746c'))),
                         ),
                       ],
                     ),
