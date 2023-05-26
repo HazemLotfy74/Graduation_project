@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../Provider/auth_provider.dart';
+import 'forgot_password.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -16,9 +17,11 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
-        child: Stack(children: [
+        child: Stack(
+            children: [
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -33,23 +36,21 @@ class LoginScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Hello Again! ",
-                      style:  GoogleFonts.nerkoOne(fontSize: 35, fontWeight: FontWeight.bold,color:HexColor('fc746c')),
-                    )),
+                  child: Text(
+                    "Hello Again! ",
+                    style:  GoogleFonts.nerkoOne(fontSize: 35, fontWeight: FontWeight.bold,color:HexColor('fc746c')),
+                  ),
+                ),
                 SizedBox(
                   height: 10,
                 ),
-                Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Sign in ",
-                      style:  GoogleFonts.nerkoOne(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[600]),
-                    )),
+                Text(
+                  "Sign in ",
+                  style:  GoogleFonts.nerkoOne(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600]),
+                ),
                 SizedBox(height: 15,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -164,12 +165,8 @@ class LoginScreen extends StatelessWidget {
                           Provider.of<AuthProvider>(context, listen: false)
                               .loginWithFacebook();
                         }, icon: Logo(Logos.facebook_logo)),
-                        SizedBox(width: 20,
-                        ),
-                        IconButton(onPressed: (){
-                          Provider.of<AuthProvider>(context, listen: false)
-                              .googleSign(context);
-                        }, icon: Logo(Logos.twitter)),
+
+
                       ],
                     ),
                     const SizedBox(
@@ -188,6 +185,26 @@ class LoginScreen extends StatelessWidget {
                           },
                           child: Text(
                             'Sign Up',
+                            style:  GoogleFonts.nerkoOne(color: HexColor('fc746c'),fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Forgot your password?',
+                          style:  GoogleFonts.nerkoOne(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return ForgotPassword();
+                            },));
+                          },
+                          child: Text(
+                            'Reset Password',
                             style:  GoogleFonts.nerkoOne(color: HexColor('fc746c'),fontWeight: FontWeight.bold),
                           ),
                         ),

@@ -38,40 +38,36 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.4
   shared_preferences: ^2.0.15
-  dio: ^4.0.6
+  dio: ^5.1.2
   firebase_core: ^2.4.0
-  cloud_firestore: ^4.2.0
   get: ^4.6.5
   firebase_auth: ^4.2.0
-  google_sign_in: ^5.4.2
+  google_sign_in: ^6.1.0
   flutter_hex_color: ^2.0.0
   image_picker: ^0.8.6
   firebase_storage: ^11.0.7
   flutter_launcher_icons: ^0.11.0
   flutter_native_splash: ^2.2.16
   hexcolor: ^3.0.1
-  syncfusion_flutter_charts: ^20.3.50
+  syncfusion_flutter_charts: ^21.2.4
   flutter_html: ^3.0.0-alpha.6
-  flutter_svg: ^1.1.6
-  animated_theme_switcher: ^2.0.7
+  flutter_svg: ^2.0.5
   flutter_splash_screen: ^1.0.0+6
   quickalert: ^1.0.0
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.4
   smooth_page_indicator: ^1.0.0+2
   url_launcher: ^6.1.7
-  sqflite: ^2.2.2
-  font_awesome_flutter: ^10.3.0
-  iconsax: ^0.0.8
-  ionicons: ^0.2.1
-  awesome_dialog: ^3.0.2
-  flutter_beautiful_popup: ^1.7.0
-  animated_splash_screen: ^1.3.0
-  animated_icon_button: ^1.0.2
-  icons_plus: ^3.0.0
-  animated_svg: ^1.1.2
+  icons_plus: ^4.0.0
+  animated_svg: ^2.0.0
   flutter_facebook_auth: ^5.0.7
   flutter_login_facebook: ^1.7.0
-  http: ^0.13.5
+  http: ^0.13.6
+  cloud_firestore: ^4.6.0
+  tflite:
+    git:
+      url: https://github.com/draz26648/tflite_edited
+  lottie: ^2.3.2
+  animated_splash_screen: ^1.3.0
 
 
 dev_dependencies:
@@ -80,11 +76,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/rx.png"
-  icon_size: 60
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/prescription.png
+  image_path: "assets/prescription.png"
+  icon_size: 80
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -106,19 +99,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - assets/email.png
-      - assets/سيف.png
-      - assets/الدواء.jpg
-      - assets/فيزيتا.png
-      - assets/مصر.png
-      - assets/user.png
-      - assets/mobile-bk.png
-      - assets/mobile-bk2.png
-      - assets/Welcome-rafiki.png
-      - assets/Doctors-pana.svg
-      - assets/Questions-pana.svg
-      - assets/Hello-rafiki.svg
-      - assets/rx.png
+      - assets/
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

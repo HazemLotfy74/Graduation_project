@@ -1,5 +1,5 @@
 
-import 'package:animated_svg/animated_svg_controller.dart';
+import 'package:animated_svg/animated_svg.dart';
 import 'package:finalproject/Authentication/Screens/stilllogin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
@@ -27,12 +27,10 @@ class _BoardingScreenState extends State<BoardingScreen> {
   late final SvgController controller;
   @override
   void initState() {
-    // Initialize SvgController
     controller = AnimatedSvgController();
     super.initState();
   }
   void dispose() {
-    // Dispose SvgController
     controller.dispose();
     super.dispose();
   }

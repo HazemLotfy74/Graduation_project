@@ -30,6 +30,7 @@ android {
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -48,7 +49,7 @@ android {
         applicationId "com.hazem.finalproject.finalproject"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 29
         targetSdkVersion flutter.targetSdkVersion
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
@@ -62,6 +63,11 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
+
 }
 
 flutter {
@@ -71,8 +77,13 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:31.2.1')
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.facebook.android:facebook-android-sdk:15.2.0'
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+
+
+
 }
 
