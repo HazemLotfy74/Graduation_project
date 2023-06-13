@@ -18,10 +18,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
 
   final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
 
 
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
     var prof = Provider.of<DrugInfo>(context);
     return Scaffold(
       appBar: AppBar(
@@ -54,16 +56,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   hintStyle: GoogleFonts.pacifico(color: Colors.grey)
                 ),
                 onSubmitted: (String searchQuery) {
+                  setState(() {
+                    _isSearching = true;
+                  });
                  prof.getData(searchQuery.trim());
-                 prof.runSearch(searchQuery.trim());
+                 prof.runSearch(searchQuery.trim()).then((value){
+                   setState(() {
+                     _isSearching=false;
+                   });
+                 });
 
                 },
               ),
             ),
-
-            prof.drug.isEmpty && prof.searchResult.isEmpty?
-            Center(child: Text("No drugs searched for now",style: GoogleFonts.pacifico(color: Colors.grey,fontSize: 20),))
-                :
+                 if(_isSearching)Center(child: CircularProgressIndicator(color: HexColor('fc746c'),),)
+                  else if(prof.drug.isEmpty&&prof.searchResult.isEmpty)
+                 Center(child: Text("No drugs searched for now",style: GoogleFonts.pacifico(color: Colors.grey,fontSize: 20),))
+            else
                  Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(15),
@@ -71,11 +80,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   separatorBuilder: (context, index) {
                     return SizedBox(height: 20,);
                   },
-                  itemCount: prof.drug.length,
+                  itemCount: prof.searchResult.length,
                   itemBuilder: (BuildContext context, int index) {
                     final data = prof.searchResult[index].data();
-                    return Container(
-                      width: double.infinity,
+
+                    return  Container(
+                      width: deviceSize.width,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.black12,
@@ -108,6 +118,4 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-// prof.isLoading?
-//                 CircularProgressIndicator():
-//                 prof.searchResult.isEmpty?Center(child: Text("No drugs searched for now",style: GoogleFonts.pacifico(color: Colors.grey,fontSize: 20),))
+

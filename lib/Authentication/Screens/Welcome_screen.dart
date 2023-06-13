@@ -37,12 +37,13 @@ class _BoardingScreenState extends State<BoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children:[
           Container(
-            width: double.infinity,
-            height: double.infinity,
+            width: deviceSize.width,
+            height: deviceSize.height,
             child: Image.asset("assets/mobile-bk.png",fit: BoxFit.fill,),
           ),
           Align(

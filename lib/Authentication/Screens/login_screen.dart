@@ -14,8 +14,10 @@ class LoginScreen extends StatelessWidget {
   final _email = TextEditingController();
   final _password = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Form(
@@ -23,8 +25,8 @@ class LoginScreen extends StatelessWidget {
         child: Stack(
             children: [
           Container(
-            width: double.infinity,
-            height: double.infinity,
+            width: deviceSize.width,
+            height: deviceSize.height,
             child: Image.asset(
               "assets/mobile-bk2.png",
               fit: BoxFit.fill,

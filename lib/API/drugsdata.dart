@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'ApiRequest.dart';
 class DrugInfo extends ChangeNotifier{
   List<DrugModel> drug = [];
   List<DocumentSnapshot> searchResult = [];
-  bool isLoading = false;
+ static bool isLoading = true;
   Future getData(String drugName)async{
     try{
       var dio = await Dio().get('https://drug-info-and-price-history.p.rapidapi.com/1/druginfo?drug=$drugName',options: Options(
@@ -28,10 +29,10 @@ class DrugInfo extends ChangeNotifier{
       notifyListeners();
 }
 
-  runSearch(String searchQuery) {
+  runSearch(String searchQuery) async{
     // perform search query on Firestore
     try{
-      FirebaseFirestore.instance
+     await FirebaseFirestore.instance
           .collection('drugs')
           .where('name', isEqualTo: searchQuery)
           .get()
