@@ -9,8 +9,8 @@ import 'ApiRequest.dart';
 class DrugInfo extends ChangeNotifier{
   List<DrugModel> drug = [];
   List<DocumentSnapshot> searchResult = [];
- static bool isLoading = true;
-  Future getData(String drugName)async{
+    bool isLoading = true ;
+  Future getData(String drugName,context)async{
     try{
       var dio = await Dio().get('https://drug-info-and-price-history.p.rapidapi.com/1/druginfo?drug=$drugName',options: Options(
           headers: {
@@ -24,14 +24,16 @@ class DrugInfo extends ChangeNotifier{
     }
     catch(e){
       GetSnackBar(duration: Duration(seconds: 3),backgroundColor: Colors.red,message: "No drugs found",).show();
+
       notifyListeners();
     }
+    isLoading=false;
       notifyListeners();
 }
 
-  runSearch(String searchQuery) async{
-    // perform search query on Firestore
+  runSearch(String searchQuery,context) async{
     try{
+
      await FirebaseFirestore.instance
           .collection('drugs')
           .where('name', isEqualTo: searchQuery)
@@ -46,6 +48,7 @@ class DrugInfo extends ChangeNotifier{
       GetSnackBar(duration: Duration(seconds: 3),backgroundColor: Colors.red,message: "No drugs found",).show();
       notifyListeners();
     }
+    isLoading=false;
    notifyListeners();
   }
 }

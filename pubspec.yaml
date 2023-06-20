@@ -68,6 +68,9 @@ dependencies:
       url: https://github.com/draz26648/tflite_edited
   lottie: ^2.3.2
   animated_splash_screen: ^1.3.0
+  flutter_image_compress: ^1.0.1
+  tflite_flutter: any
+  path_provider: ^2.0.5
 
 
 dev_dependencies:
